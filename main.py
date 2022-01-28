@@ -2,6 +2,9 @@ from aws_mailer import sendEmail as aws
 from mailgun_mailer import sendEmail as mailgun
 import csv
 import time
+from logger_config import configLogger
+
+main_logger = configLogger(__name__)
 
 choices = [aws, mailgun]
 
@@ -39,15 +42,15 @@ def main():
     for email in emails:
 
         # avoid sending too many requests - wait for 1 second after sending 15 emails
-        if count % 15 == 0:
-            time.sleep(1)
+        if count % 100 == 0:
+            time.sleep(3600)
 
         sendEmail(email)
         print(f"{count} {'email' if count == 1 else 'emails'} sent\n\n")
         count += 1
 
-    print("Any unsent emails can be found in unsent.csv")
-    print("Thank you for using ieee-mailer !!")
+    main_logger.info("Any unsent emails can be found in unsent.csv")
+    main_logger.info("Thank you for using ieee-mailer !!")
 
 
 if __name__ == "__main__":
